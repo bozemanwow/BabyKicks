@@ -26,13 +26,13 @@ public class HistoryVeiw extends AppCompatActivity {
         SetUpItemListner();
 
     }
-    ArrayAdapter<String> adp;
+     CustomKickListAdapter adp;
     private void PopulateListView()
     {
         String[] myItems ={"Blue","Green","Purple"};
         Liste = new ArrayList<String>();
         Collections.addAll(Liste,myItems);
-        adp = new ArrayAdapter<String>(this,R.layout.history_item,Liste);
+        adp = new CustomKickListAdapter(this, Liste );
         HisVe.setAdapter(adp);
 
     }
