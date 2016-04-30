@@ -7,24 +7,32 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class HistoryVeiw extends AppCompatActivity {
 
     ListView HisVe;
+    List<String> Liste;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_veiw);
         HisVe = (ListView)findViewById(R.id.listViewHistory);
-      //  SetUpItemListner();
+
         PopulateListView();
+
+        SetUpItemListner();
+
     }
     ArrayAdapter<String> adp;
     private void PopulateListView()
     {
         String[] myItems ={"Blue","Green","Purple"};
-        adp = new ArrayAdapter<String>(this,R.layout.history_item,myItems);
+        Liste = new ArrayList<String>();
+        Collections.addAll(Liste,myItems);
+        adp = new ArrayAdapter<String>(this,R.layout.history_item,Liste);
         HisVe.setAdapter(adp);
 
     }
@@ -34,7 +42,12 @@ public class HistoryVeiw extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-             parent.removeView(view);
+
+                Liste.remove(position);
+
+                adp.notifyDataSetChanged();
+
+
             }
         });
     }

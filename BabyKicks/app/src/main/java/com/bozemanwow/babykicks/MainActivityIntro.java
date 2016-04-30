@@ -124,7 +124,7 @@ public class MainActivityIntro extends AppCompatActivity {
 
     public void AddKick(View v) {
 
-        if (elapsedMillis > 0 && Kicks < 10) {
+        if (elapsedMillis >= 0 && Kicks < 10) {
 
             Kicks++;
             KPH.setText("Past Hour " + String.valueOf(Kicks));
