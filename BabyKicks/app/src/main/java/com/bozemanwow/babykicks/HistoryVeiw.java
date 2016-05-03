@@ -14,13 +14,14 @@ import java.util.List;
 public class HistoryVeiw extends AppCompatActivity {
 
     ListView HisVe;
-    List<String> Liste;
+    List<BabyKickEvent> Liste;
+    HistoryDataBase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_veiw);
         HisVe = (ListView)findViewById(R.id.listViewHistory);
-
+        db = new HistoryDataBase(this);
         PopulateListView();
 
         SetUpItemListner();
@@ -29,9 +30,10 @@ public class HistoryVeiw extends AppCompatActivity {
      CustomKickListAdapter adp;
     private void PopulateListView()
     {
-        String[] myItems ={"Blue","Green","Purple"};
-        Liste = new ArrayList<String>();
-        Collections.addAll(Liste,myItems);
+
+
+        Liste = db.getAllKicks();
+
         adp = new CustomKickListAdapter(this, Liste );
         HisVe.setAdapter(adp);
 
@@ -42,7 +44,7 @@ public class HistoryVeiw extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
+                db.delete_byId(Liste.get(position).getId());
                 Liste.remove(position);
 
                 adp.notifyDataSetChanged();

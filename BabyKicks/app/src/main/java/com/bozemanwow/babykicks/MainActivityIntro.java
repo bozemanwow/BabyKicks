@@ -3,7 +3,6 @@ package com.bozemanwow.babykicks;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Message;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,7 +20,10 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.text.SimpleDateFormat;
 
+import java.util.Date;
+import java.util.Locale;
 
 
 public class MainActivityIntro extends AppCompatActivity {
@@ -30,11 +32,11 @@ public class MainActivityIntro extends AppCompatActivity {
     int Kicks = 0;
     long twohours = (60 * 60)*2 * 100;
     long elapsedMillis=0;
-    DataBaseHistoryHelper DB;
-
+    HistoryDataBase DB;
+   String sDate;
     String STime;
 
-    Time st;
+    Time mClock;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -48,11 +50,26 @@ public class MainActivityIntro extends AppCompatActivity {
         setContentView(R.layout.activity_main_activity_intro);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DB = new DataBaseHistoryHelper(this);
-        st = new Time();
-        st.setToNow();
+        DB = new HistoryDataBase(this);
+        mClock = new Time();
+        mClock.setToNow();
+        SimpleDateFormat da = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        sDate = da.format(new Date(0));
 
-        STime= String.valueOf(st.hour)+":"+String.valueOf(st.minute);
+        int hour = mClock.hour;
+        if(hour > 12)
+            hour -= 12;
+        String hourtemp,minutetemp;
+        if(hour < 10)
+            hourtemp ="0"+String.valueOf(hour);
+        else
+            hourtemp =String.valueOf(hour);
+        if(mClock.minute < 10)
+            minutetemp="0"+String.valueOf(mClock.minute);
+        else
+            minutetemp=String.valueOf(mClock.minute);
+
+        STime= hourtemp +":"+minutetemp;
 
         Timer = (Chronometer) findViewById(R.id.LastKickTimer);
         Timer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -92,12 +109,24 @@ public class MainActivityIntro extends AppCompatActivity {
 
     public void InsertData()
     {
-        String temp =String.valueOf(st.hour)+":"+String.valueOf(st.minute);
-    if(    !DB.InsertData(STime,temp,elapsedMillis,Kicks))
+        int hour = mClock.hour;
+        if(hour > 12)
+           hour -= 12;
+        String hourtemp,minutetemp;
+        if(hour < 10)
+            hourtemp ="0"+String.valueOf(hour);
+        else
+            hourtemp =String.valueOf(hour);
+        if(mClock.minute < 10)
+            minutetemp="0"+String.valueOf(mClock.minute);
+        else
+            minutetemp=String.valueOf(mClock.minute);
+        String endTime =hourtemp +":"+minutetemp;
+    if(    -1>DB.insertData(new BabyKickEvent(sDate,STime,endTime,elapsedMillis,Kicks)))
     {
         KPH.setText("Nope");
     }
-        STime = temp;
+        STime = endTime;
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
