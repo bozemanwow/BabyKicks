@@ -18,47 +18,46 @@
         android:layout_height="wrap_content"
         android:text="Kick Speed: 0 kph"
         android:id="@+id/textViewKicksPerHour"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_below="@+id/LastKickTimer"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/abc_text_size_title_material"
+        android:textColor="@color/abc_input_method_navigation_guard" />
 
     <Chronometer
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/LastKickTimer"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kick"
-        android:id="@+id/buttonKick"
-        android:layout_below="@+id/textViewKicksPerHour"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="138dp"
-        android:onClick="AddKick"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="History"
-        android:id="@+id/buttonHistory"
-        android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="VeiwHistory"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="88dp"
+        android:textSize="@dimen/abc_dialog_padding_top_material" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reset"
         android:id="@+id/buttonReset"
-        android:layout_alignTop="@+id/buttonKick"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:onClick="ResetInfo"/>
+        android:onClick="ResetInfo"
+        android:layout_above="@+id/buttonKick"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kick"
+        android:id="@+id/buttonKick"
+        android:onClick="AddKick"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="History"
+        android:id="@+id/buttonHistory"
+        android:onClick="VeiwHistory"
+        android:layout_below="@+id/buttonKick"
+        android:layout_alignLeft="@+id/buttonKick"
+        android:layout_alignStart="@+id/buttonKick" />
+
 </RelativeLayout>
