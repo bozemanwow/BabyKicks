@@ -38,9 +38,9 @@ public class HistoryDataBase {
 
         ContentValues cV = new ContentValues();
         cV.put(mDataBaseHistoryHelper.Col_Date, babyKick.getDate() );
-        cV.put(mDataBaseHistoryHelper.Col_Clock_Start, babyKick.getStart());
+        cV.put(mDataBaseHistoryHelper.Col_Clock_Start,  String.valueOf(babyKick.getStart()));
         cV.put(mDataBaseHistoryHelper.Col_Clock_End, babyKick.getEnd());
-        cV.put(mDataBaseHistoryHelper.Col_Clock_Length, babyKick.getLength());
+        cV.put(mDataBaseHistoryHelper.Col_Clock_Length, String.valueOf(babyKick.getLength()));
         cV.put(mDataBaseHistoryHelper.Col_KickCount, babyKick.getKicks());
 
         keyId =  database.insert(mDataBaseHistoryHelper.Table_Name, null, cV);
@@ -51,7 +51,20 @@ public class HistoryDataBase {
 
         return  keyId;
     }
+    private int getIntFromColumnName(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        return cursor.getInt(columnIndex);
+    }
 
+    private String getStringFromColumnName(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        return cursor.getString(columnIndex);
+    }
+
+    private double getDoubleFromColumnName(Cursor cursor, String columnName) {
+        int columnIndex = cursor.getColumnIndex(columnName);
+        return cursor.getDouble(columnIndex);
+    }
     public List<BabyKickEvent> getAllKicks() {
         List<BabyKickEvent> kickList = new LinkedList<BabyKickEvent>();
         SQLiteDatabase database = open();
@@ -62,12 +75,12 @@ public class HistoryDataBase {
         if(cursor.moveToFirst()) {
             do{
                 BabyKickEvent newKick = new BabyKickEvent();
-                newKick.setId(Integer.parseInt(cursor.getString(0)));
-                newKick.setDate(cursor.getString(1));
-                newKick.setStart(cursor.getString(2));
-                newKick.setEnd(cursor.getString(3));
-                newKick.setLength(cursor.getFloat(4));
-                newKick.setKicks(cursor.getInt(5));
+                newKick.setId(getIntFromColumnName(cursor, BaseColumns._ID));
+                newKick.setDate(getStringFromColumnName(cursor, DataBaseHistoryHelper.Col_Date));
+                newKick.setStart(getStringFromColumnName(cursor, DataBaseHistoryHelper.Col_Clock_Start));
+                newKick.setEnd( getStringFromColumnName(cursor,  DataBaseHistoryHelper.Col_Clock_End));
+                newKick.setLength(Float.parseFloat(getStringFromColumnName(cursor,  DataBaseHistoryHelper.Col_Clock_Length)));
+                newKick.setKicks(getIntFromColumnName(cursor, DataBaseHistoryHelper.Col_KickCount));
 
                 kickList.add(newKick);
 

@@ -27,14 +27,14 @@ import java.util.Locale;
 
 
 public class MainActivityIntro extends AppCompatActivity {
-    TextView KPH;
-    Chronometer Timer;
+    TextView mKicksPerMinute;
+    Chronometer mTimer;
     int Kicks = 0;
     long twohours = (60 * 60)*2 * 100;
     long elapsedMillis=0;
-    HistoryDataBase DB;
-   String sDate;
-    String STime;
+    HistoryDataBase mDataBase;
+   String mStrDate;
+    String mStrTime;
 
     Time mClock;
 
@@ -50,11 +50,11 @@ public class MainActivityIntro extends AppCompatActivity {
         setContentView(R.layout.activity_main_activity_intro);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DB = new HistoryDataBase(this);
+        mDataBase = new HistoryDataBase(this);
         mClock = new Time();
         mClock.setToNow();
         SimpleDateFormat da = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        sDate = da.format(new Date(0));
+        mStrDate = da.format(new Date(0));
 
         int hour = mClock.hour;
         if(hour > 12)
@@ -69,10 +69,11 @@ public class MainActivityIntro extends AppCompatActivity {
         else
             minutetemp=String.valueOf(mClock.minute);
 
-        STime= hourtemp +":"+minutetemp;
+        mStrTime = hourtemp +":"+minutetemp;
 
-        Timer = (Chronometer) findViewById(R.id.LastKickTimer);
-        Timer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+        mTimer = (Chronometer) findViewById(R.id.LastKickTimer);
+        // Makes sure timer stops when goes past alloted time and sets clock as needed
+        mTimer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             public void onChronometerTick(Chronometer cArg) {
 
                 if(elapsedMillis  <  twohours )
@@ -91,8 +92,8 @@ public class MainActivityIntro extends AppCompatActivity {
                 cArg.setText(DateFormat.format("mm:ss",elapsedMillis));
             }
         } );
-        KPH = (TextView) findViewById(R.id.textViewKicksPerHour);
-        KPH.setText(STime);
+        mKicksPerMinute = (TextView) findViewById(R.id.textViewKicksPerHour);
+        mKicksPerMinute.setText(mStrTime);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +107,7 @@ public class MainActivityIntro extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
     }
-
+// Insert Data when timer is up or when kicks reached their limit
     public void InsertData()
     {
         int hour = mClock.hour;
@@ -122,11 +123,11 @@ public class MainActivityIntro extends AppCompatActivity {
         else
             minutetemp=String.valueOf(mClock.minute);
         String endTime =hourtemp +":"+minutetemp;
-    if(    -1>DB.insertData(new BabyKickEvent(sDate,STime,endTime,elapsedMillis,Kicks)))
+    if(    -1> mDataBase.insertData(new BabyKickEvent(mStrDate, mStrTime,endTime,elapsedMillis,Kicks)))
     {
-        KPH.setText("Nope");
+        mKicksPerMinute.setText("Nope");
     }
-        STime = endTime;
+        mStrTime = endTime;
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -150,40 +151,49 @@ public class MainActivityIntro extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+// Add kickount when information goes past insert data and stop clock, when kicks start, start the clock
     public void AddKick(View v) {
 
-        if (elapsedMillis >= 0 && Kicks < 10) {
+        if( Kicks < 1)
+        {
+            mTimer.setBase(SystemClock.elapsedRealtime());
+            mTimer.setText(DateFormat.format("mm:ss",elapsedMillis));
+            mTimer.start();
+            Kicks++;
+            mKicksPerMinute.setText("Past Hour " + String.valueOf(Kicks));
+        }
+        else if (elapsedMillis > 0 && Kicks < 9) {
 
             Kicks++;
-            KPH.setText("Past Hour " + String.valueOf(Kicks));
+            mKicksPerMinute.setText("Past Hour " + String.valueOf(Kicks));
+            mTimer.start();
         }
         else if( Kicks < 9)
         {
-            Timer.setBase(SystemClock.elapsedRealtime());
-            Timer.start();
+            mTimer.setBase(SystemClock.elapsedRealtime());
+            mTimer.start();
             Kicks++;
-            KPH.setText("Past Hour " + String.valueOf(Kicks));
+            mKicksPerMinute.setText("Past Hour " + String.valueOf(Kicks));
         }
         else
         {
             Kicks++;
-            KPH.setText("Past Hour " + String.valueOf(0));
+            mKicksPerMinute.setText("Past Hour " + String.valueOf(0));
             InsertData();
             Kicks = 0;
             elapsedMillis = 0;
-
-            Timer.setBase(SystemClock.elapsedRealtime());
-            Timer.setText(DateFormat.format("mm:ss",elapsedMillis));
+            mTimer.stop();
+            mTimer.setBase(SystemClock.elapsedRealtime());
+            mTimer.setText(DateFormat.format("mm:ss",elapsedMillis));
         }
     }
     public void ResetInfo(View v)
     {
-        Timer.stop();
+        mTimer.stop();
         Kicks = 0;
         elapsedMillis = 0;
-        KPH.setText("Past Hour " + String.valueOf(0));
-        Timer.setText(DateFormat.format("mm:ss",elapsedMillis));
+        mKicksPerMinute.setText("Past Hour " + String.valueOf(0));
+        mTimer.setText(DateFormat.format("mm:ss",elapsedMillis));
     }
     public void VeiwHistory(View v)
     {

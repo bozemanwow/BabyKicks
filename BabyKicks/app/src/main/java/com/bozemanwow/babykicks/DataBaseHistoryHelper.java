@@ -23,10 +23,11 @@ public class DataBaseHistoryHelper extends SQLiteOpenHelper {
     public static final String Col_Clock_Length = "Clock_Length";
     public static final String Col_KickCount = "Kick_Count";
     private static String CREATE_BABYKICKED = "CREATE TABLE BabyKicked ( " +
-            BaseColumns._ID + " INTERGER PRIMARY KEY AUTOINCREMENT, " +
+            BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "Date TEXT, " +
             "Clock_Time_Start TEXT, " +
-            "Clock_Length FLOAT, " +
+            "Clock_Time_End TEXT, " +
+            "Clock_Length TEXT, " +
             "Kick_Count INTEGER )";
 
 
