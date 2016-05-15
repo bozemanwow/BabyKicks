@@ -54,7 +54,8 @@ public class MainActivityIntro extends AppCompatActivity {
         mClock = new Time();
         mClock.setToNow();
         SimpleDateFormat da = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        mStrDate = da.format(new Date(0));
+
+        mStrDate = da.format(new Date());
 
         int hour = mClock.hour;
         if(hour > 12)
